@@ -13,19 +13,19 @@ import javax.swing.Timer;
 public class Board extends JPanel {
 	private static final int MINO_TYPE_LEN 	= 7;
 	private static final int MINO_ANGLE_LEN = 4;
-	private static final int FIELD_WIDTH 	  = 12;
+	private static final int FIELD_WIDTH 	= 12;
 	private static final int FIELD_HEIGHT 	= 22;
-	private static final int MINO_WIDTH 	  = 4;
-	private static final int MINO_HEIGHT	  = 4;
-	private static final int SPEED 			    = 300;
+	private static final int MINO_WIDTH 	= 4;
+	private static final int MINO_HEIGHT	= 4;
+	private static final int SPEED 		= 300;
 
 	private Random rand = new Random();
 	private Timer timer;
-	private int minoType 	= 0;
-	private int minoAngle = 0;
-	private int minoX 		= 5;
-	private int minoY 		= 0;
-	private int [][] field 			    = new int[FIELD_HEIGHT][FIELD_WIDTH];
+	private int minoType	= 0;
+	private int minoAngle 	= 0;
+	private int minoX 	= 5;
+	private int minoY 	= 0;
+	private int [][] field 		= new int[FIELD_HEIGHT][FIELD_WIDTH];
 	private int [][] displayBuffer 	= new int[FIELD_HEIGHT][FIELD_WIDTH];
 	
 	private static final int[][][][] minoShapes = {
@@ -36,175 +36,175 @@ public class Board extends JPanel {
 					{0, 1, 0, 0},
 					{0, 1, 0, 0}
 				},
-				{
+				{// ANGLE_90
 					{0, 0, 0, 0},
 					{0, 0, 0, 0},
 					{1, 1, 1, 1},
 					{0, 0, 0, 0},
 				},
-				{
+				{// ANGLE_180
 					{0, 0, 1, 0},
 					{0, 0, 1, 0},
 					{0, 0, 1, 0},
 					{0, 0, 1, 0},
 				},
-				{
+				{// ANGLE_270
 					{0, 0, 0, 0},
 					{1, 1, 1, 1},
 					{0, 0, 0, 0},
 					{0, 0, 0, 0}
 				}
 			},
-			{
-				{
+			{//MINO_O
+				{//ANGLE_0
 					{0, 0, 0, 0},
 					{0, 1, 1, 0},
 					{0, 1, 1, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_90
 					{0, 0, 0, 0},
 					{0, 1, 1, 0},
 					{0, 1, 1, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_180
 					{0, 0, 0, 0},
 					{0, 1, 1, 0},
 					{0, 1, 1, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_270
 					{0, 0, 0, 0},
 					{0, 1, 1, 0},
 					{0, 1, 1, 0},
 					{0, 0, 0, 0}
 				}
 			},
-			{
-				{
+			{//MINO_S
+				{//ANGLE_0
 					{0, 0, 0, 0},
 					{0, 1, 1, 0},
 					{1, 1, 0, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_90
 					{0, 1, 0, 0},
 					{0, 1, 1, 0},
 					{0, 0, 1, 0},
 					{0, 0, 0, 0},
 				},
-				{
+				{// ANGLE_180
 					{0, 0, 0, 0},
 					{0, 0, 1, 1},
 					{0, 1, 1, 0},
 					{0, 0, 0, 0},
 				},
-				{
+				{// ANGLE_270
 					{0, 0, 0, 0},
 					{0, 1, 0, 0},
 					{0, 1, 1, 0},
 					{0, 0, 1, 0}
 				}
 			},
-			{
-				{
+			{// MINO_Z
+				{//ANGLE_0
 					{0, 0, 0, 0},
 					{1, 1, 0, 0},
 					{0, 1, 1, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_90
 					{0, 0, 0, 0},
 					{0, 0, 1, 0},
 					{0, 1, 1, 0},
 					{0, 1, 0, 0},
 				},
-				{
+				{// ANGLE_180
 					{0, 0, 0, 0},
 					{0, 1, 1, 0},
 					{0, 0, 1, 1},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_270
 					{0, 0, 1, 0},
 					{0, 1, 1, 0},
 					{0, 1, 0, 0},
 					{0, 0, 0, 0}
 				}
 			},
-			{
-				{
+			{//MINO_J
+				{//ANGLE_0
 					{0, 0, 1, 0},
 					{0, 0, 1, 0},
 					{0, 1, 1, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_90
 					{0, 0, 0, 0},
 					{1, 1, 1, 0},
 					{0, 0, 1, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_180
 					{0, 0, 0, 0},
 					{0, 1, 1, 0},
 					{0, 1, 0, 0},
 					{0, 1, 0, 0}
 				},
-				{
+				{// ANGLE_270
 					{0, 0, 0, 0},
 					{0, 1, 0, 0},
 					{0, 1, 1, 1},
 					{0, 0, 0, 0}
 				}
 			},
-			{
-				{
+			{//MINO_L
+				{//ANGLE_0
 					{0, 1, 0, 0},
 					{0, 1, 0, 0},
 					{0, 1, 1, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_90
 					{0, 0, 0, 0},
 					{0, 0, 1, 0},
 					{1, 1, 1, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_180
 					{0, 0, 0, 0},
 					{0, 1, 1, 0},
 					{0, 0, 1, 0},
 					{0, 0, 1, 0}
 				},
-				{
+				{// ANGLE_270
 					{0, 0, 0, 0},
 					{0, 1, 1, 1},
 					{0, 1, 0, 0},
 					{0, 0, 0, 0}
 				}
 			},
-			{
-				{
+			{//MINO_T
+				{//ANGLE_0
 					{0, 0, 0, 0},
 					{1, 1, 1, 0},
 					{0, 1, 0, 0},
 					{0, 0, 0, 0}
 				},
-				{
+				{// ANGLE_90
 					{0, 0, 0, 0},
 					{0, 1, 0, 0},
 					{0, 1, 1, 0},
 					{0, 1, 0, 0}
 				},
-				{
+				{// ANGLE_180
 					{0, 0, 0, 0},
 					{0, 0, 1, 0},
 					{0, 1, 1, 0},
 					{0, 0, 1, 0}
 				},
-				{
+				{// ANGLE_270
 					{0, 0, 1, 0},
 					{0, 1, 1, 0},
 					{0, 0, 1, 0},
