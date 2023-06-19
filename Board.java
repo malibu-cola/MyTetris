@@ -1,4 +1,4 @@
-package my_tetris5;
+package my_tetris;
 
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
