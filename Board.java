@@ -361,6 +361,11 @@ public class Board extends JPanel {
     	}
 
     }
+    private void drawSquare(Graphics g, int x, int y) {
+    	// 座標と幅から四角形を描くメソッド
+    	// g.fillRect(x座標, y座標, 横幅, 縦幅)
+    	g.fillRect(x + 1, y + 1, squareWidth() - 1, squareHeight() - 1 );
+    }
     private int squareWidth() {
         return (int) getSize().getWidth() / FIELD_WIDTH;
     }
