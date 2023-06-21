@@ -1,4 +1,4 @@
-package my_tetris;
+package my_tetris5;
 
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -11,23 +11,12 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Board extends JPanel {
-	private static final int MINO_TYPE_LEN 	= 7;
-	private static final int MINO_ANGLE_LEN = 4;
-	private static final int FIELD_WIDTH 	= 12;
-	private static final int FIELD_HEIGHT 	= 22;
-	private static final int MINO_WIDTH 	= 4;
-	private static final int MINO_HEIGHT	= 4;
-	private static final int SPEED 		= 300;
-
-	private Random rand = new Random();
-	private Timer timer;
-	private int minoType	= 0;
-	private int minoAngle 	= 0;
-	private int minoX 	= 5;
-	private int minoY 	= 0;
-	private int [][] field 		= new int[FIELD_HEIGHT][FIELD_WIDTH];
-	private int [][] displayBuffer 	= new int[FIELD_HEIGHT][FIELD_WIDTH];
-	
+	// ミノについての定数
+	private static final int MINO_TYPE_LEN 	= 7; // ミノのタイプ数
+	private static final int MINO_ANGLE_LEN = 4; // ミノの角度の種類数
+	private static final int MINO_WIDTH 	= 4; // ミノの幅
+	private static final int MINO_HEIGHT	= 4; // ミノの高さ
+	// 各ミノについての形についての定数
 	private static final int[][][][] minoShapes = {
 			{// MINO_I
 				{//ANGLE_0
@@ -81,7 +70,7 @@ public class Board extends JPanel {
 					{0, 0, 0, 0}
 				}
 			},
-			{//MINO_S
+			{// MINO_S
 				{//ANGLE_0
 					{0, 0, 0, 0},
 					{0, 1, 1, 0},
@@ -107,7 +96,7 @@ public class Board extends JPanel {
 					{0, 0, 1, 0}
 				}
 			},
-			{// MINO_Z
+			{//MINO_Z
 				{//ANGLE_0
 					{0, 0, 0, 0},
 					{1, 1, 0, 0},
@@ -201,8 +190,8 @@ public class Board extends JPanel {
 				{// ANGLE_180
 					{0, 0, 0, 0},
 					{0, 0, 1, 0},
-					{0, 1, 1, 0},
-					{0, 0, 1, 0}
+					{0, 1, 1, 1},
+					{0, 0, 0, 0}
 				},
 				{// ANGLE_270
 					{0, 0, 1, 0},
@@ -213,12 +202,42 @@ public class Board extends JPanel {
 			}
 	};
 
+	// フィールドについての定数
+	private static final int FIELD_WIDTH 	= 12; // フィールドの幅
+	private static final int FIELD_HEIGHT 	= 22; // フィールドの高さ
+	
+	// その他の変数・定数
+	private static final int SPEED 			= 300;// ミノの落ちる速さ（小→速, 大→遅）
+	private Random rand 					= new Random(); // ミノのタイプ、角度を決めるための乱数
+	private Timer timer; // 知らなくてよし！
+
+	// 現在のミノの状態を保持するインスタンス変数
+	private int minoType 	= 0; // 現在のミノタイプ
+	private int minoAngle 	= 0; // 現在のミノ角度
+	private int minoX 		= 5; // 現在のミノのx座標
+	private int minoY 		= 0; // 現在のミノのy座標
+	
+	// 現在のフィールドを保持するインスタンス変数
+	private int [][] field 			= new int[FIELD_HEIGHT][FIELD_WIDTH]; 
+	// FIELD_HEIGHT * FIELD_WIDTH を0で初期化.
+	// もし0だったら何もなし。
+	// 1だったらブロック(ミノ)が存在する。
+
+	// フィールドとミノを同時に描画するためのインスタンス変数。
+	private int [][] displayBuffer 	= new int[FIELD_HEIGHT][FIELD_WIDTH];
+	// ミノは毎秒動くので、動くミノとフィールドを毎秒更新する。
+	// フィールドとミノとのOR演算でつくる。（わからなかったら図解）
+	
 	// **********************************************************************************************
 	// 初期設定
 	// **********************************************************************************************
-    public Board(Gameform parent) {
-        addKeyListener(new TAdapter()); // キーボード操作を受け付ける。キーボード操作はTAdapterクラスで定義。
+	
+	// コンストラクタ(キーボード操作を受け付ける)
+	public Board(Gameform parent) {
+        addKeyListener(new TAdapter()); // キーボード操作を受け付ける。キーボード操作はTAdapterクラス(下の方)で定義。
     }
+	
+	// タイマーが動いている間、繰り返してくれるメソッド(むずいと思うので聞いてほしい)
     public void start() {
     	resetField(); // フィールドをリセット
     	resetMino();  // ミノの初期位置、ミノタイプを設定。
@@ -229,12 +248,13 @@ public class Board extends JPanel {
     private class GameCycle implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-        	update();
-        	repaint(); // paintComponentメソッドを呼び出して再描画してくれる。
+        	update();	// テトリスのupdateメソッドを呼び出し。
+        	repaint(); 	// paintComponentメソッドの呼び出し(厳密には少し違うらしいが...)
         }
     } 
  
- 	// **********************************************************************************************
+    // ディスプレイバッファーをフィールドと同じように初期化する。
+    // **********************************************************************************************
  	// テトリスアルゴリズム
  	// **********************************************************************************************
     private void resetDisplayBuffer() {
@@ -257,12 +277,15 @@ public class Board extends JPanel {
     	
     }
 
+    
+    // ミノのX,Y座標を初期化し、ミノタイプとミノ角度を乱数で決定。
     private void resetMino() {
     	minoX = 5;
     	minoY = 0 ;
     	minoType = Math.abs(rand.nextInt()) % MINO_TYPE_LEN;
     	minoAngle = Math.abs(rand.nextInt()) % MINO_ANGLE_LEN;
     }
+    
    
     
     private void update() {
@@ -288,48 +311,64 @@ public class Board extends JPanel {
     				}
     			}
     		}
-    		resetMino();
+    		resetMino(); // ミノの位置座標とタイプ角度を決めるメソッド呼び出し
     	} else {
-    		minoY++;
+    		minoY++; // ミノのY座標を+1
     	}
-    	display();
+    	display(); // 描画してくれるメソッド呼び出し。
     }
     
+    // 描画してくれるメソッド
+    
     private void display() {
-    	resetDisplayBuffer();
+    	resetDisplayBuffer(); // フィールドをバッファにコピー
+    	// フィールドとミノをOR演算
     	for (int i = 0; i < MINO_HEIGHT; i++) {
     		for (int j = 0; j < MINO_WIDTH; j++) {
     			displayBuffer[minoY + i][minoX + j] |= minoShapes[minoType][minoAngle][i][j];
     		}
     	}
+    	// 描画(252行目と同じ)
     	repaint();
     }
+    
+    // ミノがフィーールドと接触するかどうかを確認するメソッド
     private boolean isHit(int minoX, int minoY, int minoType, int minoAngle) {
+    	// ミノがあり、かつフィールドがあればヒットする。
     	for (int i = 0; i < MINO_HEIGHT; i++) {
     		for (int j = 0; j < MINO_WIDTH; j++) {
     			if (minoShapes[minoType][minoAngle][i][j] == 1 && field[minoY + i][minoX + j] == 1) {
-    				return true;
+    				return true;// ヒットすればtrueを返す。
     			}
     		}
     	}
+    	// ヒットしなければfalseを返す
     	return false;
     }    
+    
+    // キーボード処理を受け付けるクラス・メソッド
     private class TAdapter extends KeyAdapter {
     	@Override
     	public void keyPressed(KeyEvent e) {
     		switch(e.getKeyCode()) {
+    		// "A"が入力されたら,X座標を-1(左に移動)したい。
+    		// ヒットしているかどうか確かめて、ヒットしなければXを-1
     		case KeyEvent.VK_A:
     			if (!isHit(minoX - 1, minoY, minoType, minoAngle))
     				minoX--;
     			break;
+    		// "D"が入力されたら右に移動したい。(同上)
     		case KeyEvent.VK_D:
     			if (!isHit(minoX + 1, minoY, minoType, minoAngle))
     				minoX++;
     			break;
+    		// "S"が入力されたら下に移動したい(同上)
     		case KeyEvent.VK_S:
     			if (!isHit(minoX, minoY + 1, minoType, minoAngle))
     				minoY++;
     			break;
+    		// "W"が入力されたら、回転したい
+    		// minoAngle + 1する。
     		case KeyEvent.VK_W:
     			if (!isHit(minoX, minoY, minoType, (minoAngle + 1) % MINO_ANGLE_LEN))
     				minoAngle = (minoAngle + 1) % MINO_ANGLE_LEN;
@@ -339,6 +378,7 @@ public class Board extends JPanel {
     }
     
 
+    // **********************************************************************************************
     // **********************************************************************************************
     // 描画メソッド
     // **********************************************************************************************
@@ -361,15 +401,15 @@ public class Board extends JPanel {
     	}
 
     }
-    private void drawSquare(Graphics g, int x, int y) {
-    	// 座標と幅から四角形を描くメソッド
-    	// g.fillRect(x座標, y座標, 横幅, 縦幅)
-    	g.fillRect(x + 1, y + 1, squareWidth() - 1, squareHeight() - 1 );
-    }
     private int squareWidth() {
         return (int) getSize().getWidth() / FIELD_WIDTH;
     }
     private int squareHeight() {
         return (int) getSize().getHeight() / FIELD_HEIGHT;
+    }
+    private void drawSquare(Graphics g, int x, int y) {
+    	// 座標と幅から四角形を描くメソッド
+    	// g.fillRect(x座標, y座標, 横幅, 縦幅)
+    	g.fillRect(x + 1, y + 1, squareWidth() - 1, squareHeight() - 1 );
     }
 }
