@@ -1,11 +1,10 @@
-package my_tetris5;
 
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
 public class Gameform extends JFrame {
-	public Gameform() { // この辺の挙動はあんまり知らなくてよし。
+	public Gameform() {
 		Board board = new Board(this); // Boardインスタンスを作成
 		board.setFocusable(true);		// boardを可視化
 		add(board);						//	JFrame(GUIのフレーム)にboardを追加
@@ -18,7 +17,7 @@ public class Gameform extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		// 　Gameformクラスを開始。（詳細は知らなくてOK）
+		// 　Gameformクラスを開始。
 		EventQueue.invokeLater(() -> {
 			Gameform form= new Gameform();
 			form.setVisible(true);
@@ -26,4 +25,5 @@ public class Gameform extends JFrame {
 	}
 
 }
+
 
